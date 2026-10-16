@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrekBattles — Something is coming</title>
+<meta name="description" content="Fitness. Smart watch. Running, walking, hiking. Android and iOS. Friends and battles. Something is coming.">
+<meta name="theme-color" content="#07090d">
+<meta property="og:title" content="TrekBattles — Something is coming">
+<meta property="og:description" content="Take your steps. Battle your friends. Signal incoming.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307090d'/%3E%3Cpath d='M10 46 26 20l9 14 6-8 13 20z' fill='none' stroke='%2340f0b0' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #07090d;
+    --fg: #e8eef2;
+    --muted: #7d8a94;
+    --accent: #40f0b0;
+    --accent-2: #ffb347;
+    --line: #1a232b;
+    --card: #0d1217;
+  }
+  @media (prefers-color-scheme: light) {
+    /* The mystery works better dark; keep it dark for everyone. */
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  canvas#topo {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    z-index: 0; opacity: .55;
+  }
+  .vignette {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 40%, transparent 30%, var(--bg) 85%);
+  }
+  main {
+    position: relative; z-index: 2;
+    min-height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 48px 16px 32px; text-align: center; gap: 28px;
+  }
+  .tag {
+    font-size: 12px; letter-spacing: .32em; text-transform: uppercase; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .tag::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 12px var(--accent); animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: .25; transform: scale(.7); } }
+
+  h1 {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: 900; text-transform: uppercase;
+    font-size: clamp(2.6rem, 11vw, 6.5rem);
+    letter-spacing: -.02em; line-height: .95;
+  }
+  h1 span { color: var(--accent); }
+  h1 .glitch { position: relative; display: inline-block; }
+  h1 .glitch::before, h1 .glitch::after {
+    content: attr(data-t); position: absolute; inset: 0; opacity: 0;
+  }
+  h1 .glitch::before { color: var(--accent-2); }
+  h1 .glitch::after { color: #5ab0ff; }
+  h1:hover .glitch::before { opacity: .8; transform: translate(-3px, 1px); }
+  h1:hover .glitch::after  { opacity: .8; transform: translate(3px, -1px); }
+
+  .sub { color: var(--muted); font-size: clamp(.9rem, 2.4vw, 1.05rem); max-width: 34rem; line-height: 1.6; }
+
+  .hints {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 44rem;
+  }
+  .hint {
+    background: var(--card); border: 1px solid var(--line); color: var(--muted);
+    padding: 9px 14px; border-radius: 6px; font-size: .9rem; letter-spacing: .08em;
+    min-width: 7.5rem; transition: color .3s, border-color .3s, box-shadow .3s;
+    cursor: default; user-select: none;
+  }
+  .hint.on {
+    color: var(--fg); border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+    box-shadow: 0 0 18px -6px var(--accent);
+  }
+  .hint.scramble { color: var(--accent); }
+
+  .counter {
+    margin-top: 6px; border: 1px solid var(--line); background: var(--card);
+    border-radius: 10px; padding: 16px 28px; min-width: 15rem;
+  }
+  .counter small {
+    display: block; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted);
+  }
+  .counter b {
+    display: block; margin-top: 6px; font-size: clamp(2rem, 7vw, 2.8rem); font-weight: 700;
+    color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: .06em;
+  }
+
+  .platforms { display: flex; gap: 14px; color: var(--muted); font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; }
+  .platforms span { padding: 4px 10px; border: 1px dashed var(--line); border-radius: 4px; }
+
+  footer { color: #46525b; font-size: .72rem; letter-spacing: .12em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tag::before { animation: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="topo" aria-hidden="true"></canvas>
+<div class="vignette"></div>
+
+<main>
+  <div class="tag">Signal detected</div>
+
+  <h1><span class="glitch" data-t="Trek">Trek</span><br><span class="glitch" data-t="Battles" style="color:var(--fg)">Battles</span></h1>
+
+  <p class="sub">Something is being built out on the trail. We are not ready to say what. Here is what we can tell you.</p>
+
+  <div class="hints" id="hints" aria-label="Hints about the app"></div>
+
+  <div class="platforms"><span>Android</span><span>iOS</span></div>
+
+  <div class="counter" aria-live="polite">
+    <small>Explorers who found this page</small>
+    <b id="count">0000000</b>
+  </div>
+
+  <footer>Coming soon &middot; &copy; <span id="yr"></span> TrekBattles</footer>
+</main>
+
+<script>
+(function () {
+  // ---------- Hints: scrambled until "decoded" ----------
+  var WORDS = ["Fitness", "Smart Watch", "Running", "Walking", "Hiking", "Android", "iOS", "Friends", "Battles"];
+  var GLYPHS = "▓▒░#%&@$01<>/\\|=+*";
+  var box = document.getElementById("hints");
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function scrambled(word) {
+    return word.split("").map(function (c) {
+      return c === " " ? " " : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+    }).join("");
+  }
+
+  function decode(el, word) {
+    if (reduced) { el.textContent = word; el.classList.add("on"); return; }
+    var frame = 0, total = 18;
+    el.classList.add("scramble");
+    var t = setInterval(function () {
+      frame++;
+      var keep = Math.floor((frame / total) * word.length);
+      el.textContent = word.slice(0, keep) + scrambled(word.slice(keep));
+      if (frame >= total) {
+        clearInterval(t);
+        el.textContent = word;
+        el.classList.remove("scramble");
+        el.classList.add("on");
+      }
+    }, 45);
+  }
+
+  WORDS.forEach(function (w, i) {
+    var el = document.createElement("div");
+    el.className = "hint";
+    el.textContent = scrambled(w);
+    box.appendChild(el);
+    setTimeout(function () { decode(el, w); }, 600 + i * 450);
+    // Re-scramble and re-decode on hover for fun.
+    el.addEventListener("mouseenter", function () {
+      if (el.classList.contains("on") && !el.classList.contains("scramble")) {
+        el.classList.remove("on"); decode(el, w);
+      }
+    });
+  });
+
+  // ---------- Visit counter ----------
+  var countEl = document.getElementById("count");
+  var KEY = "tb_counted";
+
+  function show(n) {
+    var target = Number(n) || 0;
+    var s = String(target).padStart(7, "0");
+    if (reduced) { countEl.textContent = s; return; }
+    var start = performance.now(), dur = 1200;
+    (function tick(now) {
+      var p = Math.min(1, (now - start) / dur);
+      var v = Math.floor(target * (1 - Math.pow(1 - p, 3)));
+      countEl.textContent = String(v).padStart(7, "0");
+      if (p < 1) requestAnimationFrame(tick);
+    })(start);
+  }
+
+  var seen = false;
+  try { seen = sessionStorage.getItem(KEY) === "1"; } catch (e) {}
+
+  // First load in a session counts as a visit (POST); refreshes only read (GET).
+  fetch("/api/visit", { method: seen ? "GET" : "POST" })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      show(d.count);
+    })
+    .catch(function () { countEl.textContent = "-------"; });
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  // ---------- Topographic background ----------
+  var cv = document.getElementById("topo"), ctx = cv.getContext("2d");
+  var W, H, t0 = 0;
+
+  function size() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  addEventListener("resize", size); size();
+
+  // Cheap contour lines: sample a smooth field on a coarse grid, draw iso-bands.
+  function field(x, y, t) {
+    return Math.sin(x * 0.0042 + t) + Math.sin(y * 0.0051 - t * 0.7) +
+           Math.sin((x + y) * 0.0027 + t * 0.5) + Math.sin(Math.hypot(x - W * 0.5, y - H * 0.4) * 0.006 - t * 0.4);
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    var step = Math.max(14, Math.round(W / 90));
+    var cols = Math.ceil(W / step) + 1, rows = Math.ceil(H / step) + 1;
+    var grid = new Float32Array(cols * rows);
+    for (var j = 0; j < rows; j++)
+      for (var i = 0; i < cols; i++) grid[j * cols + i] = field(i * step, j * step, t);
+
+    ctx.lineWidth = Math.max(1, W / 1400);
+    ctx.strokeStyle = "rgba(64,240,176,.35)";
+    ctx.beginPath();
+    for (var level = -3; level <= 3; level += 0.45) {
+      for (var j2 = 0; j2 < rows - 1; j2++) {
+        for (var i2 = 0; i2 < cols - 1; i2++) {
+          var a = grid[j2 * cols + i2] - level, b = grid[j2 * cols + i2 + 1] - level,
+              c = grid[(j2 + 1) * cols + i2 + 1] - level, d = grid[(j2 + 1) * cols + i2] - level;
+          var x = i2 * step, y = j2 * step, pts = [];
+          if ((a > 0) !== (b > 0)) pts.push([x + step * a / (a - b), y]);
+          if ((b > 0) !== (c > 0)) pts.push([x + step, y + step * b / (b - c)]);
+          if ((d > 0) !== (c > 0)) pts.push([x + step * d / (d - c), y + step]);
+          if ((a > 0) !== (d > 0)) pts.push([x, y + step * a / (a - d)]);
+          if (pts.length >= 2) { ctx.moveTo(pts[0][0], pts[0][1]); ctx.lineTo(pts[1][0], pts[1][1]); }
+          if (pts.length === 4) { ctx.moveTo(pts[2][0], pts[2][1]); ctx.lineTo(pts[3][0], pts[3][1]); }
+        }
+      }
+    }
+    ctx.stroke();
+  }
+
+  if (reduced) { draw(1); }
+  else {
+    (function loop(ms) { draw(ms / 6000); requestAnimationFrame(loop); })(0);
+  }
+})();
+</script>
+</body>
+</html>
