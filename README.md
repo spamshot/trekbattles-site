@@ -1,6 +1,6 @@
 # TrekBattles coming-soon site
 
-Static page (`index.html`) plus one Pages Function (`functions/api/visit.js`) that keeps the visit counter in
+Static page (`public/index.html`) plus a small Worker (`src/index.js`) that keeps the visit counter in
 Cloudflare KV. No build step.
 
 ## Deploy (one time)
