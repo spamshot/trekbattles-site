@@ -1,0 +1,11 @@
+{
+  "name": "trekbattles-site",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "run_worker_first": ["/api/*"]
+  },
+  // No id on purpose: wrangler creates the namespace on first deploy and fills it in.
+  "kv_namespaces": [{ "binding": "VISITS" }]
+}

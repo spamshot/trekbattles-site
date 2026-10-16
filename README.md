@@ -5,25 +5,17 @@ Cloudflare KV. No build step.
 
 ## Deploy (one time)
 
-1. **Put this folder in its own GitHub repo** (e.g. `trekbattles-site`). Do not push it inside the Fieldops repo.
-   ```bash
-   cd trekbattles-site
-   git init -b main && git add . && git commit -m "Coming soon page"
-   # create an empty repo on GitHub, then:
-   git remote add origin https://github.com/<you>/trekbattles-site.git
-   git push -u origin main
-   ```
-2. **Cloudflare dashboard -> Workers & Pages -> Create -> Pages -> Connect to Git**, pick the repo.
-   Framework preset: None. Build command: leave empty. Build output directory: `/`.
-3. **KV for the counter:** Storage & Databases -> KV -> Create namespace `trekbattles-visits`.
-   Then in the Pages project: Settings -> Bindings -> Add -> KV namespace -> variable name `VISITS`
-   -> choose that namespace (add it for Production, and Preview if you want). Redeploy once.
-4. **Custom domain:** Pages project -> Custom domains -> add `trekbattles.com` (and `www.trekbattles.com`).
-   Cloudflare creates the DNS records because the domain is on your account.
+Cloudflare Workers with static assets: `public/` holds the page, `src/index.js` is the counter API, and
+`wrangler.jsonc` ties them together (the `VISITS` KV namespace is created automatically on first deploy).
+
+1. Push this repo to GitHub.
+2. Cloudflare dashboard -> Workers & Pages -> Create application -> import the repo. Build command empty,
+   deploy command `npx wrangler deploy`.
+3. Worker -> Settings -> Domains & Routes -> add custom domain `trekbattles.com` and `www.trekbattles.com`.
 
 ## Make TrekBattle.com forward to TrekBattles.com
 
-Do not add `trekbattle.com` to the Pages project. Instead, in the `trekbattle.com` zone:
+Do not add `trekbattle.com` to the Worker. Instead, in the `trekbattle.com` zone:
 
 1. DNS: add an `A` record `@` -> `192.0.2.1` and a `CNAME` `www` -> `trekbattle.com`, both **Proxied** (orange cloud).
    These are dummy targets; the redirect fires before anything is fetched.
@@ -37,4 +29,4 @@ Every push to `main` redeploys the site automatically.
 
 ## Local preview
 
-`npx wrangler pages dev . --kv VISITS` (the counter works locally against a temporary KV).
+`npx wrangler dev` (the counter uses a local KV).
