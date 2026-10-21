@@ -7,5 +7,9 @@
     "run_worker_first": ["/api/*"]
   },
   // No id on purpose: wrangler creates the namespace on first deploy and fills it in.
+  "routes": [
+    { "pattern": "trekbattles.com", "custom_domain": true },
+    { "pattern": "www.trekbattles.com", "custom_domain": true }
+  ],
   "kv_namespaces": [{ "binding": "VISITS" }]
 }
