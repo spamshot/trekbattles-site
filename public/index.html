@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TrekBattles — Walk. Hatch. Collect. Battle.</title>
-<meta name="description" content="TrekBattles turns your daily steps into a collectible creature game. Hatch an egg, grow your partner, race in weekly groups and battle your friends. Beta opens October 24, 2026.">
+<meta name="description" content="TrekBattles turns your daily steps into a collectible creature game. Hatch an egg, grow your partner, race in weekly groups and battle your friends. Beta opens December 23, 2026, maybe sooner.">
 <meta name="theme-color" content="#07090d">
 <meta property="og:title" content="TrekBattles — Walk. Hatch. Collect. Battle.">
-<meta property="og:description" content="Every step is an adventure. Beta opens October 24, 2026 on Android and iOS.">
+<meta property="og:description" content="Every step is an adventure. Beta opens December 23, 2026, maybe sooner on Android and iOS.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307090d'/%3E%3Cpath d='M32 8c10 0 17 14 17 26 0 10-8 18-17 18S15 44 15 34C15 22 22 8 32 8z' fill='none' stroke='%2340f0b0' stroke-width='5'/%3E%3C/svg%3E">
 <style>
@@ -205,7 +205,7 @@
         <div><b id="m">--</b><span>Min</span></div>
         <div><b id="s">--</b><span>Sec</span></div>
       </div>
-      <p class="beta-note">October 24, 2026 &middot; Android &amp; iOS</p>
+      <p class="beta-note">December 23, 2026 &middot; Android &amp; iOS &middot; maybe sooner</p>
     </div>
     <div class="scroll-cue mono">Scroll to meet your partner</div>
   </section>
@@ -310,9 +310,9 @@
       <div class="count-box" style="margin-top:40px" id="countBox2">
         <small class="mono" id="cdLabel2">Beta opens in</small>
         <div class="cd mono" id="cd2"><div><b>--</b><span>Days</span></div><div><b>--</b><span>Hours</span></div><div><b>--</b><span>Min</span></div><div><b>--</b><span>Sec</span></div></div>
-        <p class="beta-note">October 24, 2026 &middot; Android &amp; iOS</p>
+        <p class="beta-note">December 23, 2026 &middot; Android &amp; iOS &middot; maybe sooner</p>
       </div>
-      <div class="platforms mono"><span>Android</span><span>iOS</span><span>Beta 10.24.2026</span></div>
+      <div class="platforms mono"><span>Android</span><span>iOS</span><span>Beta 12.23.2026</span></div>
 
       <div class="counter mono" aria-live="polite">
         <small>Explorers who found this page</small>
@@ -332,15 +332,15 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var $ = function (id) { return document.getElementById(id); };
 
-  // ---------- Countdown to beta: Oct 24, 2026, 00:00 in the visitor's local time ----------
-  var TARGET = new Date(2026, 9, 24, 0, 0, 0).getTime();
+  // ---------- Countdown to beta: Dec 23, 2026, 00:00 in the visitor's local time ----------
+  var TARGET = new Date(2026, 11, 23, 0, 0, 0).getTime();
   var two = function (n) { return String(n).padStart(2, "0"); };
 
   function tick() {
     var ms = TARGET - Date.now();
     if (ms <= 0) {
       ["countBox", "countBox2"].forEach(function (id) {
-        $(id).innerHTML = '<div class="beta-live">The beta is open.</div><p class="beta-note">Android &amp; iOS &middot; October 24, 2026</p>';
+        $(id).innerHTML = '<div class="beta-live">The beta is open.</div><p class="beta-note">Android &amp; iOS &middot; December 23, 2026</p>';
       });
       return false;
     }
@@ -380,7 +380,7 @@
     egg.dataset.c = Math.min(taps, 2);
     if (taps >= 3) {
       hatched = true; egg.classList.add("hatched");
-      msg.innerHTML = "<b>Your partner is on its way.</b> Beta opens October 24.";
+      msg.innerHTML = "<b>Your partner is on its way.</b> Beta opens December 23, maybe sooner.";
       for (var i = 0; i < verbs.length; i++) verbs[i].classList.add("on");
       egg.style.pointerEvents = "none"; egg.style.height = "0"; egg.style.margin = "0";
       setTimeout(function () { egg.style.visibility = "hidden"; }, 1200);
